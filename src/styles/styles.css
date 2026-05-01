@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b1020;
+  color: white;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.card {
+  max-width: 600px;
+  padding: 24px;
+  border-radius: 24px;
+  background: #17203a;
+}
+
+.eyebrow {
+  color: #8cff7a;
+  font-weight: bold;
+  text-transform: uppercase;
+}
