@@ -27,6 +27,10 @@ export default function App() {
   const [editingExerciseId, setEditingExerciseId] = useState(null);
   const [exerciseFilter, setExerciseFilter] = useState("All");
 
+const [workouts, setWorkouts] = useLocalStorage("fitquest-workouts", []);
+const [workoutTitle, setWorkoutTitle] = useState("");
+const [selectedWorkoutExercises, setSelectedWorkoutExercises] = useState([]);
+
   const filteredExercises = useMemo(() => {
     if (exerciseFilter === "All") return exercises;
     if (exerciseFilter === "Favorites") {
