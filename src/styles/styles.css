@@ -336,3 +336,18 @@ textarea {
   width: 20px;
   height: 20px;
 }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card p {
+  color: var(--muted);
+}
+
+.stat-card strong {
+  font-size: 2rem;
+  color: var(--primary);
+}
