@@ -164,6 +164,24 @@ function startWorkout(workout) {
     }))
   });
 }
+function toggleSessionExercise(id) {
+  setActiveSession((current) => ({
+    ...current,
+    exercises: current.exercises.map((exercise) =>
+      exercise.id === id
+        ? { ...exercise, completed: !exercise.completed }
+        : exercise
+    )
+  }));
+}
+
+function finishSession() {
+  if (!activeSession) return;
+
+  console.log("Workout finished:", activeSession);
+
+  setActiveSession(null);
+}
   return (
     <main className="app" data-theme={theme}>
       <header className="hero">
@@ -180,6 +198,36 @@ function startWorkout(workout) {
           {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
         </button>
       </header>
+
+      {activeSession && (
+  <section className="card section-gap">
+    <h2>{activeSession.workoutTitle}</h2>
+
+    <p className="muted">
+      Started at {new Date(activeSession.startedAt).toLocaleTimeString()}
+    </p>
+
+    <div className="session-list">
+      {activeSession.exercises.map((exercise) => (
+        <label className="session-exercise" key={exercise.id}>
+          <input
+            type="checkbox"
+            checked={exercise.completed}
+            onChange={() => toggleSessionExercise(exercise.id)}
+          />
+
+          <span>
+            {exercise.name} — {exercise.sets} × {exercise.reps}
+          </span>
+        </label>
+      ))}
+    </div>
+
+    <button className="primary" onClick={finishSession}>
+      Finish workout
+    </button>
+  </section>
+)}
 
       <section className="two-column">
         <form className="card form" onSubmit={saveExercise}>
