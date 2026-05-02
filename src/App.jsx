@@ -406,7 +406,172 @@ function saveWorkout(event) {
             ))}
           </div>
         </section>
+            </section>
+
+      <section className="two-column section-gap">
+        <form className="card form" onSubmit={saveWorkout}>
+          <h2>Create workout</h2>
+
+          <label>
+            Workout title
+            <input
+              value={workoutTitle}
+              onChange={(event) => setWorkoutTitle(event.target.value)}
+              placeholder="Example: Push Day"
+            />
+          </label>
+
+          <div className="builder-list">
+            {selectedWorkoutExercises.length === 0 ? (
+              <p className="muted">Add exercises from the list on the right.</p>
+            ) : (
+              selectedWorkoutExercises.map((exercise) => (
+                <div className="builder-row" key={exercise.id}>
+                  <strong>{exercise.name}</strong>
+
+                  <input
+                    type="number"
+                    min="1"
+                    value={exercise.sets}
+                    onChange={(event) =>
+                      updateWorkoutExercise(
+                        exercise.id,
+                        "sets",
+                        Number(event.target.value)
+                      )
+                    }
+                  />
+
+                  <span>sets</span>
+
+                  <input
+                    type="number"
+                    min="1"
+                    value={exercise.reps}
+                    onChange={(event) =>
+                      updateWorkoutExercise(
+                        exercise.id,
+                        "reps",
+                        Number(event.target.value)
+                      )
+                    }
+                  />
+
+                  <span>reps/sec</span>
+
+                  <button
+                    type="button"
+                    className="danger"
+                    onClick={() => removeWorkoutExercise(exercise.id)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+
+          <button className="primary">Save workout</button>
+        </form>
+
+        <section>
+          <h2>Exercise picker</h2>
+
+          <div className="card-list">
+            {exercises.map((exercise) => (
+              <article className="card item-card" key={exercise.id}>
+                <div>
+                  <h3>{exercise.name}</h3>
+                  <p>
+                    {exercise.muscle} · {exercise.equipment} ·{" "}
+                    {exercise.difficulty}
+                  </p>
+                </div>
+
+                <button onClick={() => addExerciseToWorkout(exercise)}>
+                  Add to workout
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+            </section>
+
+      {/* 🔥 WORKOUT BUILDER (already done) */}
+      <section className="two-column section-gap">
+        ...
       </section>
+
+      {/* ✅ ADD THIS NEW SECTION HERE */}
+      <section className="section-gap">
+        <div className="section-title">
+          <div>
+            <p className="eyebrow">Saved routines</p>
+            <h2>Your workouts</h2>
+          </div>
+          <p className="muted">{workouts.length} workout(s) saved</p>
+        </div>
+
+        <div className="card-list">
+          {workouts.length === 0 ? (
+            <article className="card">
+              <p className="muted">
+                No workouts saved yet. Create your first routine above.
+              </p>
+            </article>
+          ) : (
+            workouts.map((workout) => (
+              <article className="card workout-card" key={workout.id}>
+                <div className="card-header">
+                  <div>
+                    <h3>
+                      {workout.favorite ? "⭐ " : ""}
+                      {workout.title}
+                    </h3>
+                    <p>{workout.exercises.length} exercise(s)</p>
+                  </div>
+
+                  <div className="actions">
+                    <button
+                      onClick={() =>
+                        setWorkouts((current) =>
+                          current.map((item) =>
+                            item.id === workout.id
+                              ? { ...item, favorite: !item.favorite }
+                              : item
+                          )
+                        )
+                      }
+                    >
+                      Favorite
+                    </button>
+
+                    <button
+                      className="danger"
+                      onClick={() =>
+                        setWorkouts((current) =>
+                          current.filter((item) => item.id !== workout.id)
+                        )
+                      }
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+                <ul>
+                  {workout.exercises.map((exercise) => (
+                    <li key={exercise.id}>
+                      {exercise.name} — {exercise.sets} × {exercise.reps}
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))
+          )}
+        </div>
+      </section>
+
     </main>
   );
 }

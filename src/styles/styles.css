@@ -264,3 +264,55 @@ textarea {
     display: none;
   }
 }
+.section-gap {
+  margin-top: 40px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.builder-list {
+  display: grid;
+  gap: 10px;
+}
+
+.builder-row {
+  display: grid;
+  grid-template-columns: 1fr 70px auto 70px auto 38px;
+  gap: 8px;
+  align-items: center;
+  background: var(--card-strong);
+  padding: 10px;
+  border-radius: 18px;
+}
+
+.builder-row input {
+  padding: 8px;
+}
+
+@media (max-width: 900px) {
+  .builder-row {
+    grid-template-columns: 1fr 64px 64px 38px;
+  }
+
+  .builder-row span {
+    display: none;
+  }
+}
+.section-title,
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.workout-card ul {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.workout-card li {
+  margin: 8px 0;
+}
