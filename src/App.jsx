@@ -31,6 +31,8 @@ const [workouts, setWorkouts] = useLocalStorage("fitquest-workouts", []);
 const [workoutTitle, setWorkoutTitle] = useState("");
 const [selectedWorkoutExercises, setSelectedWorkoutExercises] = useState([]);
 const [activeSession, setActiveSession] = useState(null);
+const [history, setHistory] = useLocalStorage("fitquest-history", []);
+const [xp, setXp] = useLocalStorage("fitquest-xp", 0);
 
   const filteredExercises = useMemo(() => {
     if (exerciseFilter === "All") return exercises;
@@ -174,14 +176,32 @@ function toggleSessionExercise(id) {
     )
   }));
 }
-
 function finishSession() {
   if (!activeSession) return;
 
-  console.log("Workout finished:", activeSession);
+  const finishedAt = new Date().toISOString();
+  const started = new Date(activeSession.startedAt);
+  const finished = new Date(finishedAt);
+  const durationMinutes = Math.max(1, Math.round((finished - started) / 60000));
 
+  const completedCount = activeSession.exercises.filter(
+    (exercise) => exercise.completed
+  ).length;
+
+  const gainedXp = completedCount * 20 + durationMinutes * 2;
+
+  const savedSession = {
+    ...activeSession,
+    finishedAt,
+    durationMinutes,
+    gainedXp
+  };
+
+  setHistory((currentHistory) => [savedSession, ...currentHistory]);
+  setXp((currentXp) => currentXp + gainedXp);
   setActiveSession(null);
 }
+
   return (
     <main className="app" data-theme={theme}>
       <header className="hero">
