@@ -105,7 +105,53 @@ const [selectedWorkoutExercises, setSelectedWorkoutExercises] = useState([]);
       )
     );
   }
+function addExerciseToWorkout(exercise) {
+  setSelectedWorkoutExercises((currentExercises) => [
+    ...currentExercises,
+    {
+      id: crypto.randomUUID(),
+      name: exercise.name,
+      muscle: exercise.muscle,
+      sets: 3,
+      reps: 10
+    }
+  ]);
+}
 
+function updateWorkoutExercise(id, field, value) {
+  setSelectedWorkoutExercises((currentExercises) =>
+    currentExercises.map((exercise) =>
+      exercise.id === id ? { ...exercise, [field]: value } : exercise
+    )
+  );
+}
+
+function removeWorkoutExercise(id) {
+  setSelectedWorkoutExercises((currentExercises) =>
+    currentExercises.filter((exercise) => exercise.id !== id)
+  );
+}
+
+function saveWorkout(event) {
+  event.preventDefault();
+
+  const cleanTitle = workoutTitle.trim();
+
+  if (!cleanTitle || selectedWorkoutExercises.length === 0) return;
+
+  setWorkouts((currentWorkouts) => [
+    {
+      id: crypto.randomUUID(),
+      title: cleanTitle,
+      favorite: false,
+      exercises: selectedWorkoutExercises
+    },
+    ...currentWorkouts
+  ]);
+
+  setWorkoutTitle("");
+  setSelectedWorkoutExercises([]);
+}
   return (
     <main className="app" data-theme={theme}>
       <header className="hero">
