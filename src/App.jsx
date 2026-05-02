@@ -580,7 +580,61 @@ function finishSession() {
           )}
         </div>
       </section>
+<section className="section-gap">
+  <div className="section-title">
+    <div>
+      <p className="eyebrow">Progress log</p>
+      <h2>Session history</h2>
+    </div>
 
+    <p className="muted">{history.length} completed session(s)</p>
+  </div>
+
+  <div className="card-list">
+    {history.length === 0 ? (
+      <article className="card">
+        <p className="muted">No completed sessions yet.</p>
+      </article>
+    ) : (
+      history.map((session) => (
+        <article className="card workout-card" key={session.id}>
+          <div className="card-header">
+            <div>
+              <h3>{session.workoutTitle}</h3>
+              <p>
+                {new Date(session.finishedAt).toLocaleDateString()} ·{" "}
+                {session.durationMinutes} min · +{session.gainedXp} XP
+              </p>
+            </div>
+
+            <button
+              className="danger"
+              onClick={() =>
+                setHistory((currentHistory) =>
+                  currentHistory.filter((item) => item.id !== session.id)
+                )
+              }
+            >
+              Delete
+            </button>
+          </div>
+
+          <ul>
+            {session.exercises.map((exercise) => (
+              <li
+                key={exercise.id}
+                className={exercise.completed ? "completed" : ""}
+              >
+                {exercise.completed ? "✅" : "⬜"} {exercise.name} —{" "}
+                {exercise.sets} × {exercise.reps}
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))
+    )}
+  </div>
+</section>
     </main>
   );
 }

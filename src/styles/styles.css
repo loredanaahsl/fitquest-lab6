@@ -351,3 +351,8 @@ textarea {
   font-size: 2rem;
   color: var(--primary);
 }
+
+.completed {
+  color: var(--muted);
+  text-decoration: line-through;
+}
