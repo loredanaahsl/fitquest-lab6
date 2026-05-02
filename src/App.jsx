@@ -30,6 +30,7 @@ export default function App() {
 const [workouts, setWorkouts] = useLocalStorage("fitquest-workouts", []);
 const [workoutTitle, setWorkoutTitle] = useState("");
 const [selectedWorkoutExercises, setSelectedWorkoutExercises] = useState([]);
+const [activeSession, setActiveSession] = useState(null);
 
   const filteredExercises = useMemo(() => {
     if (exerciseFilter === "All") return exercises;
@@ -151,6 +152,17 @@ function saveWorkout(event) {
 
   setWorkoutTitle("");
   setSelectedWorkoutExercises([]);
+}
+function startWorkout(workout) {
+  setActiveSession({
+    id: crypto.randomUUID(),
+    workoutTitle: workout.title,
+    startedAt: new Date().toISOString(),
+    exercises: workout.exercises.map((exercise) => ({
+      ...exercise,
+      completed: false
+    }))
+  });
 }
   return (
     <main className="app" data-theme={theme}>
@@ -302,6 +314,7 @@ function saveWorkout(event) {
                 </div>
 
                 <div className="actions">
+                 
                   <button onClick={() => toggleExerciseFavorite(exercise.id)}>
                     Favorite
                   </button>
@@ -530,33 +543,37 @@ function saveWorkout(event) {
                     </h3>
                     <p>{workout.exercises.length} exercise(s)</p>
                   </div>
+<div className="actions">
+  <button className="primary" onClick={() => startWorkout(workout)}>
+    Start
+  </button>
 
-                  <div className="actions">
-                    <button
-                      onClick={() =>
-                        setWorkouts((current) =>
-                          current.map((item) =>
-                            item.id === workout.id
-                              ? { ...item, favorite: !item.favorite }
-                              : item
-                          )
-                        )
-                      }
-                    >
-                      Favorite
-                    </button>
+  <button
+    onClick={() =>
+      setWorkouts((current) =>
+        current.map((item) =>
+          item.id === workout.id
+            ? { ...item, favorite: !item.favorite }
+            : item
+        )
+      )
+    }
+  >
+    Favorite
+  </button>
 
-                    <button
-                      className="danger"
-                      onClick={() =>
-                        setWorkouts((current) =>
-                          current.filter((item) => item.id !== workout.id)
-                        )
-                      }
-                    >
-                      Delete
-                    </button>
-                  </div>
+  <button
+    className="danger"
+    onClick={() =>
+      setWorkouts((current) =>
+        current.filter((item) => item.id !== workout.id)
+      )
+    }
+  >
+    Delete
+  </button>
+</div>
+                  
                 </div>
 
                 <ul>
