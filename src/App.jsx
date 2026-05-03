@@ -15,7 +15,51 @@ const emptyExercise = {
   notes: "",
   favorite: false
 };
+function calculateWorkoutQuality(session, durationMinutes) {
+  const completedExercises = session.exercises.filter(
+    (exercise) => exercise.completed
+  );
 
+  const completedCount = completedExercises.length;
+  const totalCount = session.exercises.length;
+
+  const uniqueMuscles = new Set(
+    completedExercises.map((exercise) => exercise.muscle)
+  ).size;
+
+  const completionRatio = totalCount === 0 ? 0 : completedCount / totalCount;
+
+  const baseXp = completedCount * 20;
+  const durationXp = Math.min(durationMinutes * 2, 60);
+  const varietyBonus = uniqueMuscles >= 3 ? 30 : uniqueMuscles === 2 ? 15 : 0;
+  const fullCompletionBonus = completionRatio === 1 ? 25 : 0;
+
+  const qualityScore = Math.round(
+    completionRatio * 60 + Math.min(uniqueMuscles * 10, 30) + Math.min(durationMinutes, 10)
+  );
+
+  const gainedXp = baseXp + durationXp + varietyBonus + fullCompletionBonus;
+
+  let qualityLabel = "Light session";
+
+  if (qualityScore >= 85) {
+    qualityLabel = "Excellent session";
+  } else if (qualityScore >= 65) {
+    qualityLabel = "Strong session";
+  } else if (qualityScore >= 40) {
+    qualityLabel = "Solid session";
+  }
+
+  return {
+    completedCount,
+    totalCount,
+    uniqueMuscles,
+    completionRatio,
+    qualityScore,
+    qualityLabel,
+    gainedXp
+  };
+}
 export default function App() {
   const [theme, setTheme] = useLocalStorage("fitquest-theme", "dark");
   const [exercises, setExercises] = useLocalStorage(
@@ -183,19 +227,18 @@ function finishSession() {
   const started = new Date(activeSession.startedAt);
   const finished = new Date(finishedAt);
   const durationMinutes = Math.max(1, Math.round((finished - started) / 60000));
-
-  const completedCount = activeSession.exercises.filter(
-    (exercise) => exercise.completed
-  ).length;
-
-  const gainedXp = completedCount * 20 + durationMinutes * 2;
-
-  const savedSession = {
-    ...activeSession,
-    finishedAt,
-    durationMinutes,
-    gainedXp
-  };
+const quality = calculateWorkoutQuality(activeSession, durationMinutes);
+const gainedXp = quality.gainedXp;
+ 
+ const savedSession = {
+  ...activeSession,
+  finishedAt,
+  durationMinutes,
+  gainedXp,
+  qualityScore: quality.qualityScore,
+  qualityLabel: quality.qualityLabel,
+  uniqueMuscles: quality.uniqueMuscles
+};
 
   setHistory((currentHistory) => [savedSession, ...currentHistory]);
   setXp((currentXp) => currentXp + gainedXp);
@@ -601,10 +644,16 @@ function finishSession() {
           <div className="card-header">
             <div>
               <h3>{session.workoutTitle}</h3>
-              <p>
-                {new Date(session.finishedAt).toLocaleDateString()} ·{" "}
-                {session.durationMinutes} min · +{session.gainedXp} XP
-              </p>
+             <p>
+  {new Date(session.finishedAt).toLocaleDateString()} ·{" "}
+  {session.durationMinutes} min · +{session.gainedXp} XP
+</p>
+
+<p className="muted">
+  Quality: {session.qualityLabel || "Session completed"} · Score:{" "}
+  {session.qualityScore || 0}/100 · Muscles:{" "}
+  {session.uniqueMuscles || 0}
+</p>
             </div>
 
             <button
