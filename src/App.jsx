@@ -277,7 +277,16 @@ const gainedXp = quality.gainedXp;
   setXp((currentXp) => currentXp + gainedXp);
   setActiveSession(null);
 }
+function resetProgress() {
+  const confirmed = window.confirm(
+    "Reset all XP and session history? Exercises and workouts will stay saved."
+  );
 
+  if (!confirmed) return;
+
+  setXp(0);
+  setHistory([]);
+}
   return (
     <main className="app" data-theme={theme}>
       <header className="hero">
@@ -312,7 +321,11 @@ const gainedXp = quality.gainedXp;
     </strong>
   </article>
 </section>
-
+<div className="dashboard-actions">
+  <button className="danger" onClick={resetProgress}>
+    Reset XP & History
+  </button>
+</div>
 {/* ✅ ADD PERSONAL RECORDS HERE */}
 <section className="section-gap">
   <div className="section-title">

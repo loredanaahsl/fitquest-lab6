@@ -395,3 +395,9 @@ textarea {
   border-radius: inherit;
   background: linear-gradient(90deg, var(--primary), var(--secondary));
 }
+.dashboard-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -12px;
+  margin-bottom: 24px;
+}
