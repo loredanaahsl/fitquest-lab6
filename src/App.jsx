@@ -719,6 +719,9 @@ const gainedXp = quality.gainedXp;
   {session.qualityScore || 0}/100 · Muscles:{" "}
   {session.uniqueMuscles || 0}
 </p>
+<div className="quality-meter">
+  <span style={{ width: `${session.qualityScore || 0}%` }} />
+</div>
             </div>
 
             <button
