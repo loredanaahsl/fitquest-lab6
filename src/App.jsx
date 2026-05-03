@@ -77,7 +77,40 @@ const [selectedWorkoutExercises, setSelectedWorkoutExercises] = useState([]);
 const [activeSession, setActiveSession] = useState(null);
 const [history, setHistory] = useLocalStorage("fitquest-history", []);
 const [xp, setXp] = useLocalStorage("fitquest-xp", 0);
+const personalRecords = useMemo(() => {
+  if (history.length === 0) {
+    return {
+      bestXp: 0,
+      bestQuality: 0,
+      longestWorkout: 0,
+      mostExercises: 0
+    };
+  }
 
+  return history.reduce(
+    (records, session) => {
+      const completedExercises = session.exercises.filter(
+        (exercise) => exercise.completed
+      ).length;
+
+      return {
+        bestXp: Math.max(records.bestXp, session.gainedXp || 0),
+        bestQuality: Math.max(records.bestQuality, session.qualityScore || 0),
+        longestWorkout: Math.max(
+          records.longestWorkout,
+          session.durationMinutes || 0
+        ),
+        mostExercises: Math.max(records.mostExercises, completedExercises)
+      };
+    },
+    {
+      bestXp: 0,
+      bestQuality: 0,
+      longestWorkout: 0,
+      mostExercises: 0
+    }
+  );
+}, [history]);
   const filteredExercises = useMemo(() => {
     if (exerciseFilter === "All") return exercises;
     if (exerciseFilter === "Favorites") {
@@ -280,7 +313,39 @@ const gainedXp = quality.gainedXp;
   </article>
 </section>
 
-      {activeSession && (
+{/* ✅ ADD PERSONAL RECORDS HERE */}
+<section className="section-gap">
+  <div className="section-title">
+    <div>
+      <p className="eyebrow">Personal records</p>
+      <h2>Training highlights</h2>
+    </div>
+  </div>
+
+  <div className="records-grid">
+    <article className="card record-card">
+      <p>Best XP session</p>
+      <strong>{personalRecords.bestXp} XP</strong>
+    </article>
+
+    <article className="card record-card">
+      <p>Best quality score</p>
+      <strong>{personalRecords.bestQuality}/100</strong>
+    </article>
+
+    <article className="card record-card">
+      <p>Longest workout</p>
+      <strong>{personalRecords.longestWorkout} min</strong>
+    </article>
+
+    <article className="card record-card">
+      <p>Most completed exercises</p>
+      <strong>{personalRecords.mostExercises}</strong>
+    </article>
+  </div>
+</section>
+
+{activeSession && (
   <section className="card section-gap">
     <h2>{activeSession.workoutTitle}</h2>
 
