@@ -77,6 +77,9 @@ const [selectedWorkoutExercises, setSelectedWorkoutExercises] = useState([]);
 const [activeSession, setActiveSession] = useState(null);
 const [history, setHistory] = useLocalStorage("fitquest-history", []);
 const [xp, setXp] = useLocalStorage("fitquest-xp", 0);
+const [apiToken, setApiToken] = useState("");
+const [apiExercises, setApiExercises] = useState([]);
+const [apiMessage, setApiMessage] = useState("");
 const personalRecords = useMemo(() => {
   if (history.length === 0) {
     return {
@@ -175,7 +178,56 @@ const personalRecords = useMemo(() => {
       currentExercises.filter((exercise) => exercise.id !== id)
     );
   }
+async function getAdminTokenFromApi() {
+  try {
+    const response = await fetch("http://localhost:4000/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ role: "ADMIN" })
+    });
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      setApiMessage(data.message || "Could not get token");
+      return;
+    }
+
+    setApiToken(data.token);
+    setApiMessage("Admin token received. It expires in 1 minute.");
+  } catch {
+    setApiMessage("Backend server is not running.");
+  }
+}
+
+async function loadExercisesFromApi() {
+  if (!apiToken) {
+    setApiMessage("Get a token first.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:4000/api/exercises?page=1&limit=10", {
+      headers: {
+        Authorization: `Bearer ${apiToken}`
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setApiMessage(data.message || "Could not load exercises");
+      return;
+    }
+
+    setApiExercises(data.data);
+    setApiMessage(`Loaded ${data.data.length} exercises from backend API.`);
+  } catch {
+    setApiMessage("Could not connect to backend API.");
+  }
+}
   function toggleExerciseFavorite(id) {
     setExercises((currentExercises) =>
       currentExercises.map((exercise) =>
@@ -356,6 +408,47 @@ function resetProgress() {
       <strong>{personalRecords.mostExercises}</strong>
     </article>
   </div>
+</section>
+
+<section className="section-gap">
+  <div className="section-title">
+    <div>
+      <p className="eyebrow">Backend integration</p>
+      <h2>API Demo</h2>
+    </div>
+  </div>
+
+  <article className="card api-demo-card">
+    <p className="muted">
+      This panel connects the React front-end with the protected Express API.
+    </p>
+
+    <div className="actions">
+      <button className="primary" onClick={getAdminTokenFromApi}>
+        Get ADMIN Token
+      </button>
+
+      <button onClick={loadExercisesFromApi}>
+        Load API Exercises
+      </button>
+    </div>
+
+    {apiMessage && <p className="muted api-message">{apiMessage}</p>}
+
+    {apiExercises.length > 0 && (
+      <div className="api-exercise-list">
+        {apiExercises.map((exercise) => (
+          <div key={exercise.id} className="api-exercise-item">
+            <strong>{exercise.name}</strong>
+            <span>
+              {exercise.muscle} · {exercise.equipment} ·{" "}
+              {exercise.difficulty}
+            </span>
+          </div>
+        ))}
+      </div>
+    )}
+  </article>
 </section>
 
 {activeSession && (

@@ -401,3 +401,30 @@ textarea {
   margin-top: -12px;
   margin-bottom: 24px;
 }
+.api-demo-card {
+  display: grid;
+  gap: 14px;
+}
+
+.api-message {
+  margin: 0;
+}
+
+.api-exercise-list {
+  display: grid;
+  gap: 10px;
+}
+
+.api-exercise-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--card-strong);
+  color: var(--text);
+}
+
+.api-exercise-item span {
+  color: var(--muted);
+}
