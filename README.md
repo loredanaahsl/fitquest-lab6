@@ -110,3 +110,99 @@ npm run deploy
 ## 🌍 Live Demo
 
 👉 https://loredanaahsl.github.io/fitquest-lab6
+
+---
+
+# 🔐 Lab 7 — Back-end API
+
+FitQuest also includes a protected Express.js back-end API with JWT authorization and Swagger documentation.
+
+The API supports CRUD operations for workout exercises and demonstrates front-end to back-end integration.
+
+## ✅ Back-end Features
+
+- Express.js REST API
+- CRUD operations for exercises
+- JWT authentication with roles and permissions
+- Protected API routes using Bearer Token authorization
+- Token expiration set to 1 minute
+- Swagger UI API documentation
+- Pagination support for large datasets
+- Proper HTTP status codes
+- Middleware-based authorization
+- React front-end integration using Fetch API
+
+---
+
+## 🔑 JWT Authorization
+
+The API includes a `/token` endpoint that generates JWT tokens with roles and permissions.
+
+Example:
+
+```json
+{
+  "role": "ADMIN"
+}
+```
+
+Generated token contains:
+
+```json
+{
+  "role": "ADMIN",
+  "permissions": ["READ", "WRITE", "DELETE"]
+}
+```
+
+---
+
+## 📚 Swagger API Documentation
+
+Swagger UI is available at:
+
+```txt
+http://localhost:4000/api-docs
+```
+
+Documented endpoints include:
+
+- `POST /token`
+- `GET /api/exercises`
+- `POST /api/exercises`
+- `GET /api/exercises/{id}`
+- `PUT /api/exercises/{id}`
+- `DELETE /api/exercises/{id}`
+
+---
+
+## 🔄 Pagination
+
+Exercise API supports pagination:
+
+```txt
+GET /api/exercises?page=1&limit=10
+```
+
+---
+
+## 🔗 Front-end Integration
+
+The React application connects to the protected API using Fetch requests and JWT Bearer tokens.
+
+Implemented demo features:
+
+- Generate ADMIN token from React UI
+- Load protected exercises from API
+- Display API response directly inside the app
+
+---
+
+## 🛠️ Back-end Technologies
+
+- Node.js
+- Express.js
+- JSON Web Token (JWT)
+- Swagger UI
+- Nodemon
+- CORS
