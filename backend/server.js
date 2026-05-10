@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import tokenRoutes from "./routes/token.routes.js";
 import { swaggerUi, swaggerSpec } from "./swagger.js";
+import exerciseRoutes from "./routes/exercises.routes.js";
 
 const app = express();
 const PORT = 4000;
@@ -11,6 +12,7 @@ app.use(express.json());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/token", tokenRoutes);
+app.use("/api/exercises", exerciseRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({
